@@ -1,0 +1,60 @@
+###############################
+# .NET / Visual Studio / Rider
+###############################
+
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+
+# Packages
+*.nupkg
+*.snupkg
+*.nuspec
+
+# Logs
+logs/
+*.log
+
+# Publish output
+publish/
+out/
+dist/
+
+# Test results
+TestResults/
+*.trx
+
+# Entity Framework Migrations cache
+Migrations/
+
+# Coverage / analysis
+coverage/
+*.coverage
+*.coveragexml
+
+# OS-specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Backup files
+*.bak
+*.tmp
+
+# Other user-specific
+*.userprefs
+*.vscode/
+
+###############################
+# End of .gitignore
+###############################
