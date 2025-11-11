@@ -34,10 +34,10 @@ public class Course : BaseEntity
     /// <summary>
     /// Navigation property to the teacher
     /// </summary>
-    public virtual Teacher Teacher { get; set; } = null!;
+    public Teacher Teacher { get; set; } = null!;
 
     /// <summary>
     /// Collection of enrollments for this course
     /// </summary>
-    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 }

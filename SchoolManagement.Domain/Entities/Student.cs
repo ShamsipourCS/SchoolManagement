@@ -29,5 +29,5 @@ public class Student : BaseEntity
     /// <summary>
     /// Collection of enrollments for this student
     /// </summary>
-    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 }
