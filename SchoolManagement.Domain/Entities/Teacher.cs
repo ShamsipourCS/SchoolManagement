@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SchoolManagement.Domain.ValueObjects;
 
 namespace SchoolManagement.Domain.Entities;
 
@@ -19,7 +20,7 @@ public class Teacher : BaseEntity
     /// <summary>
     /// Email address of the teacher (must be unique)
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public Email Email { get; set; } = null!;
 
     /// <summary>
     /// Date when the teacher was hired

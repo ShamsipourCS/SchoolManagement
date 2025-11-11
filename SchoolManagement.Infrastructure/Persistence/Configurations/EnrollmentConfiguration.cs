@@ -16,7 +16,14 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
         builder.ToTable("Enrollments");
         builder.HasKey(e => e.Id);
         builder.Property(e => e.EnrollDate).IsRequired();
-        builder.Property(e => e.Grade).HasColumnType("decimal(5,2)");
+
+        // Configure Grade as owned value object (nullable)
+        builder.OwnsOne(e => e.Grade, grade =>
+        {
+            grade.Property(g => g.Value)
+                .HasColumnName("Grade")
+                .HasColumnType("decimal(5,2)");
+        });
 
         builder.HasOne(e => e.Student)
                .WithMany(s => s.Enrollments)
