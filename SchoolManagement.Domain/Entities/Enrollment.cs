@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SchoolManagement.Domain.ValueObjects;
 
 namespace SchoolManagement.Domain.Entities;
 
@@ -19,7 +20,7 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Grade received by the student (0-100)
     /// </summary>
-    public decimal? Grade { get; set; }
+    public Grade? Grade { get; set; }
 
     /// <summary>
     /// Foreign key to the student

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.ValueObjects;
 
 namespace SchoolManagement.Infrastructure.Persistence.Seed;
 
@@ -13,8 +14,8 @@ public static class DevelopmentSeed
     {
         if (!context.Teachers.Any())
         {
-            var t1 = new Teacher { FullName = "Teacher One", Email = "t1@example.com", HireDate = DateTime.UtcNow.AddYears(-5) };
-            var t2 = new Teacher { FullName = "Teacher Two", Email = "t2@example.com", HireDate = DateTime.UtcNow.AddYears(-3) };
+            var t1 = new Teacher { FullName = "Teacher One", Email = new Email("t1@example.com"), HireDate = DateTime.UtcNow.AddYears(-5) };
+            var t2 = new Teacher { FullName = "Teacher Two", Email = new Email("t2@example.com"), HireDate = DateTime.UtcNow.AddYears(-3) };
             context.Teachers.AddRange(t1, t2);
             context.SaveChanges();
 

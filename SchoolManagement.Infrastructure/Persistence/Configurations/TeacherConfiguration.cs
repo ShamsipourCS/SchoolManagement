@@ -16,7 +16,17 @@ public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
         builder.ToTable("Teachers");
         builder.HasKey(t => t.Id);
         builder.Property(t => t.FullName).HasMaxLength(200).IsRequired();
-        builder.Property(t => t.Email).HasMaxLength(200).IsRequired();
-        builder.HasIndex(t => t.Email).IsUnique();
+
+        // Configure Email as owned value object
+        builder.OwnsOne(t => t.Email, email =>
+        {
+            email.Property(e => e.Value)
+                .HasColumnName("Email")
+                .HasMaxLength(200)
+                .IsRequired();
+
+            // Create unique index on the Email column
+            email.HasIndex(e => e.Value).IsUnique();
+        });
     }
 }
