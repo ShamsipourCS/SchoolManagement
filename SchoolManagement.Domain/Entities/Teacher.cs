@@ -29,5 +29,5 @@ public class Teacher : BaseEntity
     /// <summary>
     /// Collection of courses taught by this teacher
     /// </summary>
-    public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
+    public ICollection<Course> Courses { get; set; } = new List<Course>();
 }

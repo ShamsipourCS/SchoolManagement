@@ -29,7 +29,7 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Navigation property to the student
     /// </summary>
-    public virtual Student Student { get; set; } = null!;
+    public Student Student { get; set; } = null!;
 
     /// <summary>
     /// Foreign key to the course
@@ -39,5 +39,5 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Navigation property to the course
     /// </summary>
-    public virtual Course Course { get; set; } = null!;
+    public Course Course { get; set; } = null!;
 }
