@@ -1,7 +1,6 @@
 using SchoolManagement.Infrastructure.Extensions;
 using SchoolManagement.Application.Extensions;
 using SchoolManagement.API.Extensions;
-using SchoolManagement.API.Middleware;
 using Serilog;
 using Serilog.Events;
 
