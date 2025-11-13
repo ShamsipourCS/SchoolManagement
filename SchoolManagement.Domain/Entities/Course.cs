@@ -14,7 +14,9 @@ public class Course : BaseEntity
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private Course() { }
+    private Course()
+    {
+    }
 
     /// <summary>
     /// Title of the course
@@ -34,7 +36,7 @@ public class Course : BaseEntity
     /// <summary>
     /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    public Guid TeacherProfileId { get; private set; }
+    public int TeacherProfileId { get; private set; }
 
     /// <summary>
     /// Navigation property to the teacher profile
@@ -55,7 +57,7 @@ public class Course : BaseEntity
     /// <param name="description">Optional course description</param>
     /// <returns>A valid Course instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static Course Create(string title, Guid teacherProfileId, DateTime startDate, string? description = null)
+    public static Course Create(string title, int teacherProfileId, DateTime startDate, string? description = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Course title is required and cannot be empty", nameof(title));
@@ -63,8 +65,8 @@ public class Course : BaseEntity
         if (title.Length > 200)
             throw new ArgumentException("Course title cannot exceed 200 characters", nameof(title));
 
-        if (teacherProfileId == Guid.Empty)
-            throw new ArgumentException("Teacher profile ID is required", nameof(teacherProfileId));
+        if (teacherProfileId <= 0)
+            throw new ArgumentException("Teacher profile ID must be a valid positive number", nameof(teacherProfileId));
 
         if (!string.IsNullOrEmpty(description) && description.Length > 2000)
             throw new ArgumentException("Course description cannot exceed 2000 characters", nameof(description));
@@ -121,10 +123,10 @@ public class Course : BaseEntity
     /// </summary>
     /// <param name="teacherProfileId">ID of the new teacher profile</param>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public void AssignTeacher(Guid teacherProfileId)
+    public void AssignTeacher(int teacherProfileId)
     {
-        if (teacherProfileId == Guid.Empty)
-            throw new ArgumentException("Teacher profile ID is required", nameof(teacherProfileId));
+        if (teacherProfileId <= 0)
+            throw new ArgumentException("Teacher profile ID must be a valid positive number", nameof(teacherProfileId));
 
         TeacherProfileId = teacherProfileId;
     }

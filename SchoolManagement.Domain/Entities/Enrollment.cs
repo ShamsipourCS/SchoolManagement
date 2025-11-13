@@ -15,7 +15,9 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private Enrollment() { }
+    private Enrollment()
+    {
+    }
 
     /// <summary>
     /// Date when the student enrolled in the course
@@ -30,7 +32,7 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Foreign key to the student profile
     /// </summary>
-    public Guid StudentProfileId { get; private set; }
+    public int StudentProfileId { get; private set; }
 
     /// <summary>
     /// Navigation property to the student profile
@@ -40,7 +42,7 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Foreign key to the course
     /// </summary>
-    public Guid CourseId { get; private set; }
+    public int CourseId { get; private set; }
 
     /// <summary>
     /// Navigation property to the course
@@ -55,13 +57,13 @@ public class Enrollment : BaseEntity
     /// <param name="enrollDate">Enrollment date (defaults to now)</param>
     /// <returns>A valid Enrollment instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static Enrollment Create(Guid studentProfileId, Guid courseId, DateTime? enrollDate = null)
+    public static Enrollment Create(int studentProfileId, int courseId, DateTime? enrollDate = null)
     {
-        if (studentProfileId == Guid.Empty)
-            throw new ArgumentException("Student profile ID is required", nameof(studentProfileId));
+        if (studentProfileId <= 0)
+            throw new ArgumentException("Student profile ID must be a valid positive number", nameof(studentProfileId));
 
-        if (courseId == Guid.Empty)
-            throw new ArgumentException("Course ID is required", nameof(courseId));
+        if (courseId <= 0)
+            throw new ArgumentException("Course ID must be a valid positive number", nameof(courseId));
 
         var actualEnrollDate = enrollDate ?? DateTime.UtcNow;
 

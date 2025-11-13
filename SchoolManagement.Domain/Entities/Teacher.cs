@@ -12,12 +12,14 @@ public class TeacherProfile : BaseEntity
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private TeacherProfile() { }
+    private TeacherProfile()
+    {
+    }
 
     /// <summary>
     /// Foreign key to the User entity (1:1 relationship)
     /// </summary>
-    public Guid UserId { get; private set; }
+    public int UserId { get; private set; }
 
     /// <summary>
     /// Navigation property to the associated user
@@ -47,10 +49,10 @@ public class TeacherProfile : BaseEntity
     /// <param name="hireDate">Date when teacher was hired</param>
     /// <returns>A valid TeacherProfile instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static TeacherProfile Create(Guid userId, string fullName, DateTime hireDate)
+    public static TeacherProfile Create(int userId, string fullName, DateTime hireDate)
     {
-        if (userId == Guid.Empty)
-            throw new ArgumentException("User ID is required", nameof(userId));
+        if (userId <= 0)
+            throw new ArgumentException("User ID must be a valid positive number", nameof(userId));
 
         if (string.IsNullOrWhiteSpace(fullName))
             throw new ArgumentException("Full name is required and cannot be empty", nameof(fullName));
