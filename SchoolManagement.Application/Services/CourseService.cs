@@ -52,7 +52,7 @@ public class CourseService : ICourseService
     /// </summary>
     public async Task<IEnumerable<CourseResponseDto>> GetCoursesByTeacherIdAsync(int teacherId)
     {
-        var courses = await _unitOfWork.Courses.GetByTeacherIdAsync(teacherId);
+        var courses = await _unitOfWork.Courses.GetByTeacherProfileIdAsync(teacherId);
         return _mapper.Map<IEnumerable<CourseResponseDto>>(courses);
     }
 
@@ -62,16 +62,17 @@ public class CourseService : ICourseService
     public async Task<CourseResponseDto> CreateCourseAsync(CourseCreateDto courseCreateDto)
     {
         // Validate that teacher exists
-        var teacherExists = await _unitOfWork.Teachers.ExistsAsync(courseCreateDto.TeacherId);
+        var teacherExists = await _unitOfWork.TeacherProfiles.ExistsAsync(courseCreateDto.TeacherProfileId);
         if (!teacherExists)
         {
-            throw new ArgumentException($"Teacher with ID {courseCreateDto.TeacherId} does not exist.", nameof(courseCreateDto.TeacherId));
+            throw new ArgumentException($"Teacher with ID {courseCreateDto.TeacherProfileId} does not exist.",
+                nameof(courseCreateDto.TeacherProfileId));
         }
 
         // Use domain factory method to create entity with validation
         var course = Course.Create(
             courseCreateDto.Title,
-            courseCreateDto.TeacherId,
+            courseCreateDto.TeacherProfileId,
             courseCreateDto.StartDate,
             courseCreateDto.Description);
 
@@ -99,12 +100,14 @@ public class CourseService : ICourseService
         }
 
         // Validate that new teacher exists (if teacher is being changed)
-        if (courseUpdateDto.TeacherId != existingCourse.TeacherId)
+        if (courseUpdateDto.TeacherProfileId.HasValue &&
+            courseUpdateDto.TeacherProfileId != existingCourse.TeacherProfileId)
         {
-            var teacherExists = await _unitOfWork.Teachers.ExistsAsync(courseUpdateDto.TeacherId);
+            var teacherExists = await _unitOfWork.TeacherProfiles.ExistsAsync(courseUpdateDto.TeacherProfileId.Value);
             if (!teacherExists)
             {
-                throw new ArgumentException($"Teacher with ID {courseUpdateDto.TeacherId} does not exist.", nameof(courseUpdateDto.TeacherId));
+                throw new ArgumentException($"Teacher with ID {courseUpdateDto.TeacherProfileId} does not exist.",
+                    nameof(courseUpdateDto.TeacherProfileId));
             }
         }
 
@@ -113,9 +116,10 @@ public class CourseService : ICourseService
         existingCourse.UpdateDescription(courseUpdateDto.Description);
         existingCourse.UpdateStartDate(courseUpdateDto.StartDate);
 
-        if (courseUpdateDto.TeacherId != existingCourse.TeacherId)
+        if (courseUpdateDto.TeacherProfileId.HasValue &&
+            courseUpdateDto.TeacherProfileId != existingCourse.TeacherProfileId)
         {
-            existingCourse.AssignTeacher(courseUpdateDto.TeacherId);
+            existingCourse.AssignTeacher(courseUpdateDto.TeacherProfileId.Value);
         }
 
         // Update repository
@@ -144,7 +148,8 @@ public class CourseService : ICourseService
         // Prevent deletion if course has active enrollments
         if (course.Enrollments.Any())
         {
-            throw new InvalidOperationException($"Cannot delete course with ID {id} because it has {course.Enrollments.Count} active enrollment(s). Please remove enrollments first.");
+            throw new InvalidOperationException(
+                $"Cannot delete course with ID {id} because it has {course.Enrollments.Count} active enrollment(s). Please remove enrollments first.");
         }
 
         _unitOfWork.Courses.Delete(course);

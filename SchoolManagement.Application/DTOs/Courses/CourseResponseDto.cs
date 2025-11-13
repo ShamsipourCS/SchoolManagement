@@ -26,9 +26,9 @@ public class CourseResponseDto
     public DateTime StartDate { get; set; }
 
     /// <summary>
-    /// Foreign key to the teacher teaching this course
+    /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    public int TeacherId { get; set; }
+    public int TeacherProfileId { get; set; }
 
     /// <summary>
     /// Name of the teacher teaching this course

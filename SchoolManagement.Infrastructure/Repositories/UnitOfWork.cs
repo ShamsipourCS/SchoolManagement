@@ -11,16 +11,17 @@ namespace SchoolManagement.Infrastructure.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly SchoolDbContext _context;
-    private IStudentRepository? _students;
-    private ITeacherRepository? _teachers;
+    private IStudentProfileRepository? _studentProfiles;
+    private ITeacherProfileRepository? _teacherProfiles;
     private ICourseRepository? _courses;
     private IEnrollmentRepository? _enrollments;
     private IUserRepository? _users;
 
     public UnitOfWork(SchoolDbContext context) => _context = context;
 
-    public IStudentRepository Students => _students ??= new StudentRepository(_context);
-    public ITeacherRepository Teachers => _teachers ??= new TeacherRepository(_context);
+    public IStudentProfileRepository StudentProfiles => _studentProfiles ??= new StudentProfileRepository(_context);
+    public ITeacherProfileRepository TeacherProfiles => _teacherProfiles ??= new TeacherProfileRepository(_context);
+
     public ICourseRepository Courses => _courses ??= new CourseRepository(_context);
     public IEnrollmentRepository Enrollments => _enrollments ??= new EnrollmentRepository(_context);
     public IUserRepository Users => _users ??= new UserRepository(_context);

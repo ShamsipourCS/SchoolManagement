@@ -1,28 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Infrastructure.Persistence.Configurations;
 
-public class StudentConfiguration : IEntityTypeConfiguration<Student>
+/// <summary>
+/// Entity Framework configuration for StudentProfile entity
+/// </summary>
+public class StudentProfileConfiguration : IEntityTypeConfiguration<StudentProfile>
 {
-    public void Configure(EntityTypeBuilder<Student> builder)
+    public void Configure(EntityTypeBuilder<StudentProfile> builder)
     {
-        builder.ToTable("Students");
-        builder.HasKey(s => s.Id);
-        builder.Property(s => s.FullName).HasMaxLength(200).IsRequired();
-        builder.Property(s => s.BirthDate).IsRequired();
-        builder.Property(s => s.IsActive).HasDefaultValue(true);
-        builder.Property(s => s.CreatedAt).IsRequired();
+        // Table name
+        builder.ToTable("StudentProfiles");
 
-        builder.HasMany(s => s.Enrollments)
-               .WithOne(e => e.Student)
-               .HasForeignKey(e => e.StudentId)
-               .OnDelete(DeleteBehavior.Cascade);
+        // Primary key
+        builder.HasKey(sp => sp.Id);
+
+        // UserId - Foreign key to User
+        builder.Property(sp => sp.UserId)
+            .IsRequired();
+
+        builder.HasIndex(sp => sp.UserId)
+            .IsUnique()
+            .HasDatabaseName("IX_StudentProfiles_UserId");
+
+        // FullName configuration
+        builder.Property(sp => sp.FullName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        // BirthDate configuration
+        builder.Property(sp => sp.BirthDate)
+            .IsRequired();
+
+        // Audit fields
+        builder.Property(sp => sp.CreatedAt)
+            .IsRequired();
+
+        builder.Property(sp => sp.UpdatedAt)
+            .IsRequired(false);
+
+        // Relationships
+        builder.HasMany(sp => sp.Enrollments)
+            .WithOne(e => e.StudentProfile)
+            .HasForeignKey(e => e.StudentProfileId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -17,8 +17,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IStudentRepository, StudentRepository>();
-        services.AddScoped<ITeacherRepository, TeacherRepository>();
+        services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+        services.AddScoped<ITeacherProfileRepository, TeacherProfileRepository>();
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 

@@ -20,5 +20,5 @@ public interface ICourseRepository : IGenericRepository<Course>
     /// <summary>
     /// Get all courses taught by a specific teacher
     /// </summary>
-    Task<IEnumerable<Course>> GetByTeacherIdAsync(int teacherId);
+    Task<IEnumerable<Course>> GetByTeacherProfileIdAsync(int teacherProfileId);
 }

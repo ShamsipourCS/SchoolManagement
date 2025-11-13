@@ -12,36 +12,42 @@ namespace SchoolManagement.Infrastructure.Repositories;
 
 public class EnrollmentRepository : GenericRepository<Enrollment>, IEnrollmentRepository
 {
-    public EnrollmentRepository(SchoolDbContext context) : base(context) { }
+    public EnrollmentRepository(SchoolDbContext context) : base(context)
+    {
+    }
 
-    public async Task<IEnumerable<Enrollment>> GetByStudentIdAsync(int studentId)
+    public async Task<IEnumerable<Enrollment>> GetByStudentProfileIdAsync(int studentProfileId)
     {
         return await _dbSet
             .Include(e => e.Course)
-            .ThenInclude(c => c.Teacher)
-            .Where(e => e.StudentId == studentId)
+            .ThenInclude(c => c.TeacherProfile)
+            .ThenInclude(tp => tp.User.Username)
+            .Where(e => e.StudentProfileId == studentProfileId)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Enrollment>> GetByCourseIdAsync(int courseId)
     {
         return await _dbSet
-            .Include(e => e.Student)
+            .Include(e => e.StudentProfile)
+            .ThenInclude(sp => sp.User.Username)
             .Where(e => e.CourseId == courseId)
             .ToListAsync();
     }
 
-    public async Task<bool> IsEnrolledAsync(int studentId, int courseId)
+    public async Task<bool> IsEnrolledAsync(int studentProfileId, int courseId)
     {
-        return await _dbSet.AnyAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+        return await _dbSet.AnyAsync(e => e.StudentProfileId == studentProfileId && e.CourseId == courseId);
     }
 
     public async Task<Enrollment?> GetWithDetailsAsync(int id)
     {
         return await _dbSet
-            .Include(e => e.Student)
+            .Include(e => e.StudentProfile)
+            .ThenInclude(sp => sp.User.Username)
             .Include(e => e.Course)
-                .ThenInclude(c => c.Teacher)
+            .ThenInclude(c => c.TeacherProfile)
+            .ThenInclude(tp => tp.User.Username)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 }

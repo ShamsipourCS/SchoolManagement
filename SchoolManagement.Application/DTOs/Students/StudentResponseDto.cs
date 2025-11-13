@@ -1,14 +1,29 @@
 namespace SchoolManagement.Application.DTOs.Students;
 
 /// <summary>
-/// DTO for student response
+/// DTO for student profile response (includes user info)
 /// </summary>
 public class StudentResponseDto
 {
     /// <summary>
-    /// Student ID
+    /// Student profile ID
     /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// User ID (for authentication reference)
+    /// </summary>
+    public int UserId { get; set; }
+
+    /// <summary>
+    /// Username for authentication
+    /// </summary>
+    public string Username { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Email address
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Full name of the student
@@ -21,7 +36,7 @@ public class StudentResponseDto
     public DateTime BirthDate { get; set; }
 
     /// <summary>
-    /// Indicates whether the student is active
+    /// Indicates whether the user account is active
     /// </summary>
     public bool IsActive { get; set; }
 
@@ -31,7 +46,7 @@ public class StudentResponseDto
     public int EnrollmentCount { get; set; }
 
     /// <summary>
-    /// Date when the student was created
+    /// Date when the profile was created
     /// </summary>
     public DateTime CreatedAt { get; set; }
 }

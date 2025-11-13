@@ -14,7 +14,9 @@ public class Course : BaseEntity
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private Course() { }
+    private Course()
+    {
+    }
 
     /// <summary>
     /// Title of the course
@@ -32,30 +34,30 @@ public class Course : BaseEntity
     public DateTime StartDate { get; private set; }
 
     /// <summary>
-    /// Foreign key to the teacher teaching this course
+    /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    public int TeacherId { get; private set; }
+    public int TeacherProfileId { get; private set; }
 
     /// <summary>
-    /// Navigation property to the teacher
+    /// Navigation property to the teacher profile
     /// </summary>
-    public Teacher Teacher { get; private set; } = null!;
+    public virtual TeacherProfile TeacherProfile { get; private set; } = null!;
 
     /// <summary>
     /// Collection of enrollments for this course
     /// </summary>
-    public ICollection<Enrollment> Enrollments { get; private set; } = new List<Enrollment>();
+    public virtual ICollection<Enrollment> Enrollments { get; private set; } = new List<Enrollment>();
 
     /// <summary>
     /// Factory method to create a new course with validation
     /// </summary>
     /// <param name="title">Course title</param>
-    /// <param name="teacherId">ID of the assigned teacher</param>
+    /// <param name="teacherProfileId">ID of the assigned teacher profile</param>
     /// <param name="startDate">Course start date</param>
     /// <param name="description">Optional course description</param>
     /// <returns>A valid Course instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static Course Create(string title, int teacherId, DateTime startDate, string? description = null)
+    public static Course Create(string title, int teacherProfileId, DateTime startDate, string? description = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Course title is required and cannot be empty", nameof(title));
@@ -63,8 +65,8 @@ public class Course : BaseEntity
         if (title.Length > 200)
             throw new ArgumentException("Course title cannot exceed 200 characters", nameof(title));
 
-        if (teacherId <= 0)
-            throw new ArgumentException("Teacher ID must be a valid positive number", nameof(teacherId));
+        if (teacherProfileId <= 0)
+            throw new ArgumentException("Teacher profile ID must be a valid positive number", nameof(teacherProfileId));
 
         if (!string.IsNullOrEmpty(description) && description.Length > 2000)
             throw new ArgumentException("Course description cannot exceed 2000 characters", nameof(description));
@@ -72,7 +74,7 @@ public class Course : BaseEntity
         return new Course
         {
             Title = title.Trim(),
-            TeacherId = teacherId,
+            TeacherProfileId = teacherProfileId,
             StartDate = startDate,
             Description = description?.Trim()
         };
@@ -119,13 +121,13 @@ public class Course : BaseEntity
     /// <summary>
     /// Assigns a new teacher to the course
     /// </summary>
-    /// <param name="teacherId">ID of the new teacher</param>
+    /// <param name="teacherProfileId">ID of the new teacher profile</param>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public void AssignTeacher(int teacherId)
+    public void AssignTeacher(int teacherProfileId)
     {
-        if (teacherId <= 0)
-            throw new ArgumentException("Teacher ID must be a valid positive number", nameof(teacherId));
+        if (teacherProfileId <= 0)
+            throw new ArgumentException("Teacher profile ID must be a valid positive number", nameof(teacherProfileId));
 
-        TeacherId = teacherId;
+        TeacherProfileId = teacherProfileId;
     }
 }

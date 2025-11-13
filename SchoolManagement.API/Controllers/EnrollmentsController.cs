@@ -155,7 +155,8 @@ public class EnrollmentsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<EnrollmentResponseDto>> CreateEnrollment([FromBody] EnrollmentCreateDto enrollmentCreateDto)
+    public async Task<ActionResult<EnrollmentResponseDto>> CreateEnrollment(
+        [FromBody] EnrollmentCreateDto enrollmentCreateDto)
     {
         if (!ModelState.IsValid)
         {
@@ -164,7 +165,7 @@ public class EnrollmentsController : ControllerBase
         }
 
         _logger.LogInformation("Creating new enrollment for student {StudentId} in course {CourseId}",
-            enrollmentCreateDto.StudentId, enrollmentCreateDto.CourseId);
+            enrollmentCreateDto.StudentProfileId, enrollmentCreateDto.CourseId);
 
         try
         {
@@ -197,7 +198,8 @@ public class EnrollmentsController : ControllerBase
     [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<EnrollmentResponseDto>> UpdateEnrollment(int id, [FromBody] EnrollmentUpdateDto enrollmentUpdateDto)
+    public async Task<ActionResult<EnrollmentResponseDto>> UpdateEnrollment(int id,
+        [FromBody] EnrollmentUpdateDto enrollmentUpdateDto)
     {
         if (!ModelState.IsValid)
         {
@@ -241,7 +243,8 @@ public class EnrollmentsController : ControllerBase
     [ProducesResponseType(typeof(EnrollmentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<EnrollmentResponseDto>> UpdateEnrollmentGrade(int id, [FromBody] GradeUpdateDto gradeDto)
+    public async Task<ActionResult<EnrollmentResponseDto>> UpdateEnrollmentGrade(int id,
+        [FromBody] GradeUpdateDto gradeDto)
     {
         if (!ModelState.IsValid)
         {

@@ -16,14 +16,14 @@ public interface ITeacherService
     /// <summary>
     /// Get teacher by ID asynchronously
     /// </summary>
-    /// <param name="id">Teacher identifier</param>
+    /// <param name="id">Teacher profile identifier</param>
     /// <returns>Teacher response DTO if found, null otherwise</returns>
     Task<TeacherResponseDto?> GetTeacherByIdAsync(int id);
 
     /// <summary>
     /// Get teacher with course details asynchronously
     /// </summary>
-    /// <param name="id">Teacher identifier</param>
+    /// <param name="id">Teacher profile identifier</param>
     /// <returns>Teacher response DTO with course information if found, null otherwise</returns>
     Task<TeacherResponseDto?> GetTeacherWithCoursesAsync(int id);
 
@@ -44,7 +44,7 @@ public interface ITeacherService
     /// <summary>
     /// Update an existing teacher asynchronously
     /// </summary>
-    /// <param name="id">Teacher identifier</param>
+    /// <param name="id">Teacher profile identifier</param>
     /// <param name="teacherUpdateDto">Teacher update data</param>
     /// <returns>Updated teacher response DTO if found, null otherwise</returns>
     Task<TeacherResponseDto?> UpdateTeacherAsync(int id, TeacherUpdateDto teacherUpdateDto);
@@ -52,22 +52,22 @@ public interface ITeacherService
     /// <summary>
     /// Delete a teacher asynchronously
     /// </summary>
-    /// <param name="id">Teacher identifier</param>
+    /// <param name="id">Teacher profile identifier</param>
     /// <returns>True if deleted successfully, false if teacher not found or has assigned courses</returns>
     Task<bool> DeleteTeacherAsync(int id);
 
     /// <summary>
     /// Check if a teacher exists asynchronously
     /// </summary>
-    /// <param name="id">Teacher identifier</param>
+    /// <param name="id">Teacher profile identifier</param>
     /// <returns>True if teacher exists, false otherwise</returns>
     Task<bool> TeacherExistsAsync(int id);
 
     /// <summary>
-    /// Check if email is already in use by another teacher asynchronously
+    /// Check if email is already in use by another user asynchronously
     /// </summary>
     /// <param name="email">Email address to check</param>
-    /// <param name="excludeTeacherId">Optional teacher ID to exclude from check (for updates)</param>
+    /// <param name="excludeTeacherId">Optional teacher profile ID to exclude from check (for updates)</param>
     /// <returns>True if email exists, false otherwise</returns>
     Task<bool> EmailExistsAsync(string email, int? excludeTeacherId = null);
 }

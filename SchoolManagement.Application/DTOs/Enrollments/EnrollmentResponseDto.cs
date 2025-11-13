@@ -21,9 +21,9 @@ public class EnrollmentResponseDto
     public decimal? Grade { get; set; }
 
     /// <summary>
-    /// Foreign key to the student
+    /// Foreign key to the student profile
     /// </summary>
-    public int StudentId { get; set; }
+    public int StudentProfileId { get; set; }
 
     /// <summary>
     /// Name of the student

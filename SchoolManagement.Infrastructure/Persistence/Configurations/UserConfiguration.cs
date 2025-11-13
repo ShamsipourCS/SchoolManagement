@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SchoolManagement.Domain.Entities;
+using SchoolManagement.Domain.Enums;
 
 namespace SchoolManagement.Infrastructure.Persistence.Configurations;
 
@@ -40,11 +41,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(255);
 
-        // Role configuration
+        // Role configuration - stored as enum
         builder.Property(u => u.Role)
             .IsRequired()
-            .HasMaxLength(20)
-            .HasDefaultValue("Student");
+            .HasConversion<string>()
+            .HasMaxLength(20);
 
         // IsActive configuration
         builder.Property(u => u.IsActive)
@@ -57,5 +58,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.UpdatedAt)
             .IsRequired(false);
+
+        // Relationships
+        builder.HasOne(u => u.TeacherProfile)
+            .WithOne(tp => tp.User)
+            .HasForeignKey<TeacherProfile>(tp => tp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(u => u.StudentProfile)
+            .WithOne(sp => sp.User)
+            .HasForeignKey<StudentProfile>(sp => sp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

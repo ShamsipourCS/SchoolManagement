@@ -15,7 +15,9 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private Enrollment() { }
+    private Enrollment()
+    {
+    }
 
     /// <summary>
     /// Date when the student enrolled in the course
@@ -28,14 +30,14 @@ public class Enrollment : BaseEntity
     public Grade? Grade { get; private set; }
 
     /// <summary>
-    /// Foreign key to the student
+    /// Foreign key to the student profile
     /// </summary>
-    public int StudentId { get; private set; }
+    public int StudentProfileId { get; private set; }
 
     /// <summary>
-    /// Navigation property to the student
+    /// Navigation property to the student profile
     /// </summary>
-    public Student Student { get; private set; } = null!;
+    public virtual StudentProfile StudentProfile { get; private set; } = null!;
 
     /// <summary>
     /// Foreign key to the course
@@ -45,20 +47,20 @@ public class Enrollment : BaseEntity
     /// <summary>
     /// Navigation property to the course
     /// </summary>
-    public Course Course { get; private set; } = null!;
+    public virtual Course Course { get; private set; } = null!;
 
     /// <summary>
     /// Factory method to create a new enrollment with validation
     /// </summary>
-    /// <param name="studentId">ID of the student</param>
+    /// <param name="studentProfileId">ID of the student profile</param>
     /// <param name="courseId">ID of the course</param>
     /// <param name="enrollDate">Enrollment date (defaults to now)</param>
     /// <returns>A valid Enrollment instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static Enrollment Create(int studentId, int courseId, DateTime? enrollDate = null)
+    public static Enrollment Create(int studentProfileId, int courseId, DateTime? enrollDate = null)
     {
-        if (studentId <= 0)
-            throw new ArgumentException("Student ID must be a valid positive number", nameof(studentId));
+        if (studentProfileId <= 0)
+            throw new ArgumentException("Student profile ID must be a valid positive number", nameof(studentProfileId));
 
         if (courseId <= 0)
             throw new ArgumentException("Course ID must be a valid positive number", nameof(courseId));
@@ -70,7 +72,7 @@ public class Enrollment : BaseEntity
 
         return new Enrollment
         {
-            StudentId = studentId,
+            StudentProfileId = studentProfileId,
             CourseId = courseId,
             EnrollDate = actualEnrollDate,
             Grade = null

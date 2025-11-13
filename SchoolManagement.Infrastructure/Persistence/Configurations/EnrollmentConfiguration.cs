@@ -1,21 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Entity Framework configuration for Enrollment entity
+/// </summary>
 public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
 {
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
+        // Table name
         builder.ToTable("Enrollments");
+
+        // Primary key
         builder.HasKey(e => e.Id);
-        builder.Property(e => e.EnrollDate).IsRequired();
+
+        // EnrollDate configuration
+        builder.Property(e => e.EnrollDate)
+            .IsRequired();
+
+        // StudentProfileId foreign key
+        builder.Property(e => e.StudentProfileId)
+            .IsRequired();
+
+        // CourseId foreign key
+        builder.Property(e => e.CourseId)
+            .IsRequired();
 
         // Configure Grade as owned value object (nullable)
         builder.OwnsOne(e => e.Grade, grade =>
@@ -25,16 +37,22 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
                 .HasColumnType("decimal(5,2)");
         });
 
-        builder.HasOne(e => e.Student)
-               .WithMany(s => s.Enrollments)
-               .HasForeignKey(e => e.StudentId)
-               .OnDelete(DeleteBehavior.Cascade);
+        // Audit fields
+        builder.Property(e => e.CreatedAt)
+            .IsRequired();
 
+        builder.Property(e => e.UpdatedAt)
+            .IsRequired(false);
+
+        // Relationships - already configured in StudentProfileConfiguration
         builder.HasOne(e => e.Course)
-               .WithMany(c => c.Enrollments)
-               .HasForeignKey(e => e.CourseId)
-               .OnDelete(DeleteBehavior.Restrict);
+            .WithMany(c => c.Enrollments)
+            .HasForeignKey(e => e.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(e => new { e.StudentId, e.CourseId }).IsUnique(false); // duplication handled at repo/service level
+        // Composite index to prevent duplicate enrollments
+        builder.HasIndex(e => new { e.StudentProfileId, e.CourseId })
+            .IsUnique(false)
+            .HasDatabaseName("IX_Enrollments_StudentProfileId_CourseId");
     }
 }

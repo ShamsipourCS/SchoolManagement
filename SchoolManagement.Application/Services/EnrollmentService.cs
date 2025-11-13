@@ -52,7 +52,7 @@ public class EnrollmentService : IEnrollmentService
     /// </summary>
     public async Task<IEnumerable<EnrollmentResponseDto>> GetEnrollmentsByStudentIdAsync(int studentId)
     {
-        var enrollments = await _unitOfWork.Enrollments.GetByStudentIdAsync(studentId);
+        var enrollments = await _unitOfWork.Enrollments.GetByStudentProfileIdAsync(studentId);
         return _mapper.Map<IEnumerable<EnrollmentResponseDto>>(enrollments);
     }
 
@@ -71,11 +71,11 @@ public class EnrollmentService : IEnrollmentService
     public async Task<EnrollmentResponseDto> CreateEnrollmentAsync(EnrollmentCreateDto enrollmentCreateDto)
     {
         // Validate that student exists
-        var studentExists = await _unitOfWork.Students.ExistsAsync(enrollmentCreateDto.StudentId);
+        var studentExists = await _unitOfWork.StudentProfiles.ExistsAsync(enrollmentCreateDto.StudentProfileId);
         if (!studentExists)
         {
-            throw new ArgumentException($"Student with ID {enrollmentCreateDto.StudentId} does not exist.",
-                nameof(enrollmentCreateDto.StudentId));
+            throw new ArgumentException($"Student with ID {enrollmentCreateDto.StudentProfileId} does not exist.",
+                nameof(enrollmentCreateDto.StudentProfileId));
         }
 
         // Validate that course exists
@@ -88,18 +88,18 @@ public class EnrollmentService : IEnrollmentService
 
         // Prevent duplicate enrollments (same student + course)
         var isAlreadyEnrolled = await _unitOfWork.Enrollments.IsEnrolledAsync(
-            enrollmentCreateDto.StudentId,
+            enrollmentCreateDto.StudentProfileId,
             enrollmentCreateDto.CourseId);
 
         if (isAlreadyEnrolled)
         {
             throw new InvalidOperationException(
-                $"Student with ID {enrollmentCreateDto.StudentId} is already enrolled in course with ID {enrollmentCreateDto.CourseId}.");
+                $"Student with ID {enrollmentCreateDto.StudentProfileId} is already enrolled in course with ID {enrollmentCreateDto.CourseId}.");
         }
 
         // Use domain factory method to create entity with validation
         var enrollment = Enrollment.Create(
-            enrollmentCreateDto.StudentId,
+            enrollmentCreateDto.StudentProfileId,
             enrollmentCreateDto.CourseId,
             enrollmentCreateDto.EnrollDate);
 
