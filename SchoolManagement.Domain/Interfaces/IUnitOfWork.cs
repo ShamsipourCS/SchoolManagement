@@ -32,6 +32,11 @@ public interface IUnitOfWork : IDisposable
     IEnrollmentRepository Enrollments { get; }
 
     /// <summary>
+    /// User repository
+    /// </summary>
+    IUserRepository Users { get; }
+
+    /// <summary>
     /// Save all changes to the database asynchronously
     /// </summary>
     Task<int> SaveChangesAsync();
