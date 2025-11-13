@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Application.DTOs.Students;
 using SchoolManagement.Application.Interfaces;
@@ -10,6 +11,7 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;

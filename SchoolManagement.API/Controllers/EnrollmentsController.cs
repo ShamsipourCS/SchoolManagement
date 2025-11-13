@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManagement.Application.DTOs.Enrollments;
 using SchoolManagement.Application.Interfaces;
@@ -10,6 +11,7 @@ namespace SchoolManagement.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class EnrollmentsController : ControllerBase
 {
     private readonly IEnrollmentService _enrollmentService;

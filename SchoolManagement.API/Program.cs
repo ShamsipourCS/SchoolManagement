@@ -3,6 +3,9 @@ using SchoolManagement.Application.Extensions;
 using SchoolManagement.API.Extensions;
 using Serilog;
 using Serilog.Events;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -39,6 +42,62 @@ try
 
     // Register application services (AutoMapper, JWT, and business services)
     builder.Services.AddApplicationServices(builder.Configuration);
+
+    // Configure JWT Authentication
+    var jwtSecret = builder.Configuration["JwtSettings:Secret"]
+        ?? throw new InvalidOperationException("JWT Secret is not configured");
+    var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]
+        ?? throw new InvalidOperationException("JWT Issuer is not configured");
+    var jwtAudience = builder.Configuration["JwtSettings:Audience"]
+        ?? throw new InvalidOperationException("JWT Audience is not configured");
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            ClockSkew = TimeSpan.Zero // Remove default 5 minute tolerance
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Log.Warning("Authentication failed: {Message}", context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Log.Debug("Token validated for user: {User}", context.Principal?.Identity?.Name);
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                Log.Warning("Authentication challenge: {Error} - {ErrorDescription}",
+                    context.Error, context.ErrorDescription);
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+    // Configure Authorization policies
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+        options.AddPolicy("UserOrAdmin", policy => policy.RequireRole("User", "Admin"));
+    });
 
     // Configure CORS policy
     var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
@@ -81,6 +140,32 @@ try
             }
         });
 
+        // Configure JWT Authentication for Swagger
+        options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT"
+        });
+
+        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
         // Include XML comments for better API documentation
         var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -114,6 +199,10 @@ try
 
     // Enable CORS
     app.UseCors("SchoolManagementPolicy");
+
+    // Enable authentication and authorization
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllers();
 
