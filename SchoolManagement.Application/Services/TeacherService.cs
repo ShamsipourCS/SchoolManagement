@@ -61,22 +61,16 @@ public class TeacherService : ITeacherService
     /// </summary>
     public async Task<TeacherResponseDto> CreateTeacherAsync(TeacherCreateDto teacherCreateDto)
     {
-        // Validate email uniqueness
-        var emailExists = await _unitOfWork.TeacherProfiles.EmailExistsAsync(teacherCreateDto.Email);
-        if (emailExists)
-        {
-            throw new ArgumentException($"A teacher with email '{teacherCreateDto.Email}' already exists.", nameof(teacherCreateDto.Email));
-        }
-
         // Use domain factory method to create entity with validation
-        var teacherProfile = TeacherProfileProfile.Create(teacherCreateDto.FullName, teacherCreateDto.Email, teacherCreateDto.HireDate);
+        var teacherProfile =
+            TeacherProfile.Create(teacherCreateDto.UserId, teacherCreateDto.FullName, teacherCreateDto.HireDate);
 
         // Add to repository
-        await _unitOfWork.TeacherProfiles.AddAsync(teacher);
+        await _unitOfWork.TeacherProfiles.AddAsync(teacherProfile);
         await _unitOfWork.SaveChangesAsync();
 
         // Return mapped response
-        return _mapper.Map<TeacherResponseDto>(teacher);
+        return _mapper.Map<TeacherResponseDto>(teacherProfile);
     }
 
     /// <summary>
@@ -91,16 +85,8 @@ public class TeacherService : ITeacherService
             return null;
         }
 
-        // Validate email uniqueness (excluding current teacher)
-        var emailExists = await _unitOfWork.TeacherProfiles.EmailExistsAsync(teacherUpdateDto.Email, id);
-        if (emailExists)
-        {
-            throw new ArgumentException($"A teacher with email '{teacherUpdateDto.Email}' already exists.", nameof(teacherUpdateDto.Email));
-        }
-
         // Use domain methods to update entity
         existingTeacher.UpdateFullName(teacherUpdateDto.FullName);
-        existingTeacher.UpdateEmail(teacherUpdateDto.Email);
 
         // Note: HireDate cannot be updated as there's no domain method for it
         // This is intentional - hire dates should not change after creation
@@ -128,7 +114,8 @@ public class TeacherService : ITeacherService
         // Prevent deletion if teacher has assigned courses
         if (teacher.Courses.Any())
         {
-            throw new InvalidOperationException($"Cannot delete teacher with ID {id} because they have {teacher.Courses.Count} assigned course(s). Please reassign or remove courses first.");
+            throw new InvalidOperationException(
+                $"Cannot delete teacher with ID {id} because they have {teacher.Courses.Count} assigned course(s). Please reassign or remove courses first.");
         }
 
         _unitOfWork.TeacherProfiles.Delete(teacher);

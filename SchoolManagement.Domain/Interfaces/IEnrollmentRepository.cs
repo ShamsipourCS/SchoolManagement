@@ -15,7 +15,7 @@ public interface IEnrollmentRepository : IGenericRepository<Enrollment>
     /// <summary>
     /// Get all enrollments for a specific student
     /// </summary>
-    Task<IEnumerable<Enrollment>> GetByStudentIdAsync(int studentId);
+    Task<IEnumerable<Enrollment>> GetByStudentProfileIdAsync(int studentProfileId);
 
     /// <summary>
     /// Get all enrollments for a specific course
@@ -25,7 +25,7 @@ public interface IEnrollmentRepository : IGenericRepository<Enrollment>
     /// <summary>
     /// Check if student is already enrolled in a course
     /// </summary>
-    Task<bool> IsEnrolledAsync(int studentId, int courseId);
+    Task<bool> IsEnrolledAsync(int studentProfileId, int courseId);
 
     /// <summary>
     /// Get enrollment with student and course details

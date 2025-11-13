@@ -52,7 +52,7 @@ public class EnrollmentService : IEnrollmentService
     /// </summary>
     public async Task<IEnumerable<EnrollmentResponseDto>> GetEnrollmentsByStudentIdAsync(int studentId)
     {
-        var enrollments = await _unitOfWork.Enrollments.GetByStudentIdAsync(studentId);
+        var enrollments = await _unitOfWork.Enrollments.GetByStudentProfileIdAsync(studentId);
         return _mapper.Map<IEnumerable<EnrollmentResponseDto>>(enrollments);
     }
 

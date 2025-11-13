@@ -52,7 +52,7 @@ public class StudentService : IStudentService
     /// </summary>
     public async Task<IEnumerable<StudentResponseDto>> GetActiveStudentsAsync()
     {
-        var students = await _unitOfWork.StudentProfiles.GetActiveStudentsAsync();
+        var students = await _unitOfWork.StudentProfiles.GetActiveStudentProfilesAsync();
         return _mapper.Map<IEnumerable<StudentResponseDto>>(students);
     }
 
@@ -62,20 +62,15 @@ public class StudentService : IStudentService
     public async Task<StudentResponseDto> CreateStudentAsync(StudentCreateDto studentCreateDto)
     {
         // Use domain factory method to create entity with validation
-        var studentProfile = StudentProfileProfile.Create(studentCreateDto.FullName, studentCreateDto.BirthDate);
-
-        // Set active status from DTO
-        if (!studentCreateDto.IsActive)
-        {
-            student.Deactivate();
-        }
+        var studentProfile = StudentProfile.Create(studentCreateDto.StudentId, studentCreateDto.FullName,
+            studentCreateDto.BirthDate);
 
         // Add to repository
-        await _unitOfWork.StudentProfiles.AddAsync(student);
+        await _unitOfWork.StudentProfiles.AddAsync(studentProfile);
         await _unitOfWork.SaveChangesAsync();
 
         // Return mapped response
-        return _mapper.Map<StudentResponseDto>(student);
+        return _mapper.Map<StudentResponseDto>(studentProfile);
     }
 
     /// <summary>
@@ -92,16 +87,6 @@ public class StudentService : IStudentService
 
         // Use domain methods to update entity
         existingStudent.UpdateFullName(studentUpdateDto.FullName);
-
-        // Update active status
-        if (studentUpdateDto.IsActive && !existingStudent.IsActive)
-        {
-            existingStudent.Activate();
-        }
-        else if (!studentUpdateDto.IsActive && existingStudent.IsActive)
-        {
-            existingStudent.Deactivate();
-        }
 
         // Note: BirthDate cannot be updated as there's no domain method for it
         // This is intentional - birth dates should not change after creation

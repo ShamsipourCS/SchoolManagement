@@ -24,4 +24,15 @@ public interface ITeacherProfileRepository : IGenericRepository<TeacherProfile>
     /// Get all active teacher profiles (based on User.IsActive)
     /// </summary>
     Task<IEnumerable<TeacherProfile>> GetActiveTeacherProfilesAsync();
+
+
+    /// <summary>
+    /// Get teacher profile by email address
+    /// </summary>
+    Task<TeacherProfile?> GetByEmailAsync(string email);
+
+    /// <summary>
+    /// Check if email is already in use
+    /// </summary>
+    Task<bool> EmailExistsAsync(string email, int? excludeTeacherId = null);
 }
