@@ -1,5 +1,6 @@
 using SchoolManagement.Infrastructure.Extensions;
 using SchoolManagement.Application.Extensions;
+using SchoolManagement.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,10 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
+
+// Global exception handling (must be first in pipeline)
+app.UseGlobalExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
