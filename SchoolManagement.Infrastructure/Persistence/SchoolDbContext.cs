@@ -17,6 +17,7 @@ public class SchoolDbContext : DbContext
     public DbSet<Teacher> Teachers => Set<Teacher>();
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,5 +27,6 @@ public class SchoolDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TeacherConfiguration());
         modelBuilder.ApplyConfiguration(new CourseConfiguration());
         modelBuilder.ApplyConfiguration(new EnrollmentConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
     }
 }
