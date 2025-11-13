@@ -15,6 +15,7 @@ public class UnitOfWork : IUnitOfWork
     private ITeacherRepository? _teachers;
     private ICourseRepository? _courses;
     private IEnrollmentRepository? _enrollments;
+    private IUserRepository? _users;
 
     public UnitOfWork(SchoolDbContext context) => _context = context;
 
@@ -22,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
     public ITeacherRepository Teachers => _teachers ??= new TeacherRepository(_context);
     public ICourseRepository Courses => _courses ??= new CourseRepository(_context);
     public IEnrollmentRepository Enrollments => _enrollments ??= new EnrollmentRepository(_context);
+    public IUserRepository Users => _users ??= new UserRepository(_context);
 
     public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
 
