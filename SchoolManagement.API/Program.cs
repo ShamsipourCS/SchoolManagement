@@ -10,6 +10,29 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Register application services (AutoMapper and business services)
 builder.Services.AddApplicationServices();
 
+// Configure CORS policy
+var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+var corsAllowedMethods = builder.Configuration.GetSection("Cors:AllowedMethods").Get<string[]>() ?? Array.Empty<string>();
+var corsAllowedHeaders = builder.Configuration.GetSection("Cors:AllowedHeaders").Get<string[]>() ?? Array.Empty<string>();
+var corsAllowCredentials = builder.Configuration.GetValue<bool>("Cors:AllowCredentials");
+var corsMaxAge = builder.Configuration.GetValue<int>("Cors:MaxAge");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SchoolManagementPolicy", policy =>
+    {
+        policy.WithOrigins(corsAllowedOrigins)
+              .WithMethods(corsAllowedMethods)
+              .WithHeaders(corsAllowedHeaders)
+              .SetPreflightMaxAge(TimeSpan.FromSeconds(corsMaxAge));
+
+        if (corsAllowCredentials)
+        {
+            policy.AllowCredentials();
+        }
+    });
+});
+
 builder.Services.AddControllers();
 
 // Configure Swagger/OpenAPI
@@ -55,6 +78,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS
+app.UseCors("SchoolManagementPolicy");
 
 app.MapControllers();
 
