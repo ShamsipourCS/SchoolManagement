@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITeacherService, TeacherService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IEnrollmentService, EnrollmentService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }
