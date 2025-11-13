@@ -1,6 +1,7 @@
 using SchoolManagement.Infrastructure.Extensions;
 using SchoolManagement.Application.Extensions;
 using SchoolManagement.API.Extensions;
+using SchoolManagement.API.Middleware;
 using Serilog;
 using Serilog.Events;
 
@@ -96,6 +97,9 @@ try
 
     // Global exception handling (must be first in pipeline)
     app.UseGlobalExceptionHandler();
+
+    // Request/response logging (after exception handling)
+    app.UseRequestLogging();
 
     if (app.Environment.IsDevelopment())
     {
