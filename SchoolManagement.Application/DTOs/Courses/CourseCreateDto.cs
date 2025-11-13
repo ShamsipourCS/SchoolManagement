@@ -30,5 +30,5 @@ public class CourseCreateDto
     /// Foreign key to the teacher profile teaching this course
     /// </summary>
     [Required(ErrorMessage = "Teacher profile ID is required")]
-    public Guid TeacherProfileId { get; set; }
+    public int TeacherProfileId { get; set; }
 }

@@ -11,13 +11,13 @@ public class EnrollmentCreateDto
     /// Foreign key to the student profile
     /// </summary>
     [Required(ErrorMessage = "Student profile ID is required")]
-    public Guid StudentProfileId { get; set; }
+    public int StudentProfileId { get; set; }
 
     /// <summary>
     /// Foreign key to the course
     /// </summary>
     [Required(ErrorMessage = "Course ID is required")]
-    public Guid CourseId { get; set; }
+    public int CourseId { get; set; }
 
     /// <summary>
     /// Date when the student enrolled in the course (defaults to current date)

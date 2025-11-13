@@ -29,5 +29,5 @@ public class CourseUpdateDto
     /// <summary>
     /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    public Guid? TeacherProfileId { get; set; }
+    public int? TeacherProfileId { get; set; }
 }

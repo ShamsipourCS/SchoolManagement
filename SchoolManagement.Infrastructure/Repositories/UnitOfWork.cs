@@ -21,6 +21,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IStudentRepository Students => _students ??= new StudentRepository(_context);
     public ITeacherRepository Teachers => _teachers ??= new TeacherRepository(_context);
+    public IStudentProfileRepository StudentProfiles { get; }
+    public ITeacherProfileRepository TeacherProfiles { get; }
     public ICourseRepository Courses => _courses ??= new CourseRepository(_context);
     public IEnrollmentRepository Enrollments => _enrollments ??= new EnrollmentRepository(_context);
     public IUserRepository Users => _users ??= new UserRepository(_context);

@@ -8,12 +8,12 @@ public class StudentResponseDto
     /// <summary>
     /// Student profile ID
     /// </summary>
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// User ID (for authentication reference)
     /// </summary>
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     /// <summary>
     /// Username for authentication

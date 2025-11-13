@@ -8,7 +8,7 @@ public class CourseResponseDto
     /// <summary>
     /// Course ID
     /// </summary>
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Title of the course
@@ -28,7 +28,7 @@ public class CourseResponseDto
     /// <summary>
     /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    public Guid TeacherProfileId { get; set; }
+    public int TeacherProfileId { get; set; }
 
     /// <summary>
     /// Name of the teacher teaching this course
