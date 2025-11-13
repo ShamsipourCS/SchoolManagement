@@ -37,8 +37,8 @@ try
     // Register infrastructure services (DbContext, repositories, UnitOfWork)
     builder.Services.AddInfrastructure(builder.Configuration);
 
-    // Register application services (AutoMapper and business services)
-    builder.Services.AddApplicationServices();
+    // Register application services (AutoMapper, JWT, and business services)
+    builder.Services.AddApplicationServices(builder.Configuration);
 
     // Configure CORS policy
     var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
