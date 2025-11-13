@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,19 +9,19 @@ namespace SchoolManagement.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-	{
-		services.AddDbContext<SchoolDbContext>(options =>
-			options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-				b => b.MigrationsAssembly(typeof(SchoolDbContext).Assembly.FullName)));
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<SchoolDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(SchoolDbContext).Assembly.FullName)));
 
-		services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-		services.AddScoped<IStudentRepository, StudentRepository>();
-		services.AddScoped<ITeacherRepository, TeacherRepository>();
-		services.AddScoped<ICourseRepository, CourseRepository>();
-		services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<ITeacherRepository, TeacherRepository>();
+        services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
-		return services;
-	}
+        return services;
+    }
 }
