@@ -13,12 +13,12 @@ public interface IStudentProfileRepository : IGenericRepository<StudentProfile>
     /// <summary>
     /// Get student profile with all enrollments and course details
     /// </summary>
-    Task<StudentProfile?> GetWithEnrollmentsAsync(Guid id);
+    Task<StudentProfile?> GetWithEnrollmentsAsync(int id);
 
     /// <summary>
     /// Get student profile by user ID
     /// </summary>
-    Task<StudentProfile?> GetByUserIdAsync(Guid userId);
+    Task<StudentProfile?> GetByUserIdAsync(int userId);
 
     /// <summary>
     /// Get all active student profiles (based on User.IsActive)

@@ -13,12 +13,12 @@ public interface ITeacherProfileRepository : IGenericRepository<TeacherProfile>
     /// <summary>
     /// Get teacher profile with all courses
     /// </summary>
-    Task<TeacherProfile?> GetWithCoursesAsync(Guid id);
+    Task<TeacherProfile?> GetWithCoursesAsync(int id);
 
     /// <summary>
     /// Get teacher profile by user ID
     /// </summary>
-    Task<TeacherProfile?> GetByUserIdAsync(Guid userId);
+    Task<TeacherProfile?> GetByUserIdAsync(int userId);
 
     /// <summary>
     /// Get all active teacher profiles (based on User.IsActive)

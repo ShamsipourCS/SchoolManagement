@@ -22,7 +22,7 @@ public interface IGenericRepository<T> where T : BaseEntity
     /// <summary>
     /// Get entity by ID asynchronously
     /// </summary>
-    Task<T?> GetByIdAsync(Guid id);
+    Task<T?> GetByIdAsync(int id);
 
     /// <summary>
     /// Add new entity asynchronously
@@ -42,5 +42,5 @@ public interface IGenericRepository<T> where T : BaseEntity
     /// <summary>
     /// Check if entity exists by ID
     /// </summary>
-    Task<bool> ExistsAsync(Guid id);
+    Task<bool> ExistsAsync(int id);
 }
