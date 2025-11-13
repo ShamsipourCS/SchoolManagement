@@ -18,14 +18,14 @@ public interface ICourseService
     /// </summary>
     /// <param name="id">Course identifier</param>
     /// <returns>Course response DTO if found, null otherwise</returns>
-    Task<CourseResponseDto?> GetCourseByIdAsync(Guid id);
+    Task<CourseResponseDto?> GetCourseByIdAsync(int id);
 
     /// <summary>
     /// Get course with teacher and enrollment details asynchronously
     /// </summary>
     /// <param name="id">Course identifier</param>
     /// <returns>Course response DTO with teacher and enrollment information if found, null otherwise</returns>
-    Task<CourseResponseDto?> GetCourseWithDetailsAsync(Guid id);
+    Task<CourseResponseDto?> GetCourseWithDetailsAsync(int id);
 
     /// <summary>
     /// Get all courses taught by a specific teacher asynchronously
@@ -47,19 +47,19 @@ public interface ICourseService
     /// <param name="id">Course identifier</param>
     /// <param name="courseUpdateDto">Course update data</param>
     /// <returns>Updated course response DTO if found, null otherwise</returns>
-    Task<CourseResponseDto?> UpdateCourseAsync(Guid id, CourseUpdateDto courseUpdateDto);
+    Task<CourseResponseDto?> UpdateCourseAsync(int id, CourseUpdateDto courseUpdateDto);
 
     /// <summary>
     /// Delete a course asynchronously
     /// </summary>
     /// <param name="id">Course identifier</param>
     /// <returns>True if deleted successfully, false if course not found or has active enrollments</returns>
-    Task<bool> DeleteCourseAsync(Guid id);
+    Task<bool> DeleteCourseAsync(int id);
 
     /// <summary>
     /// Check if a course exists asynchronously
     /// </summary>
     /// <param name="id">Course identifier</param>
     /// <returns>True if course exists, false otherwise</returns>
-    Task<bool> CourseExistsAsync(Guid id);
+    Task<bool> CourseExistsAsync(int id);
 }

@@ -18,14 +18,14 @@ public interface IEnrollmentService
     /// </summary>
     /// <param name="id">Enrollment identifier</param>
     /// <returns>Enrollment response DTO if found, null otherwise</returns>
-    Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(Guid id);
+    Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(int id);
 
     /// <summary>
     /// Get enrollment with student and course details asynchronously
     /// </summary>
     /// <param name="id">Enrollment identifier</param>
     /// <returns>Enrollment response DTO with student and course information if found, null otherwise</returns>
-    Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(Guid id);
+    Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(int id);
 
     /// <summary>
     /// Get all enrollments for a specific student asynchronously
@@ -54,7 +54,7 @@ public interface IEnrollmentService
     /// <param name="id">Enrollment identifier</param>
     /// <param name="enrollmentUpdateDto">Enrollment update data</param>
     /// <returns>Updated enrollment response DTO if found, null otherwise</returns>
-    Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(Guid id, EnrollmentUpdateDto enrollmentUpdateDto);
+    Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(int id, EnrollmentUpdateDto enrollmentUpdateDto);
 
     /// <summary>
     /// Update the grade for an enrollment asynchronously
@@ -62,21 +62,21 @@ public interface IEnrollmentService
     /// <param name="id">Enrollment identifier</param>
     /// <param name="grade">Grade value (0-100)</param>
     /// <returns>Updated enrollment response DTO if found and grade is valid, null otherwise</returns>
-    Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(Guid id, decimal grade);
+    Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(int id, decimal grade);
 
     /// <summary>
     /// Delete an enrollment asynchronously
     /// </summary>
     /// <param name="id">Enrollment identifier</param>
     /// <returns>True if deleted successfully, false if enrollment not found</returns>
-    Task<bool> DeleteEnrollmentAsync(Guid id);
+    Task<bool> DeleteEnrollmentAsync(int id);
 
     /// <summary>
     /// Check if an enrollment exists asynchronously
     /// </summary>
     /// <param name="id">Enrollment identifier</param>
     /// <returns>True if enrollment exists, false otherwise</returns>
-    Task<bool> EnrollmentExistsAsync(Guid id);
+    Task<bool> EnrollmentExistsAsync(int id);
 
     /// <summary>
     /// Check if a student is already enrolled in a course asynchronously

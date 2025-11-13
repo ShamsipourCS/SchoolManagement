@@ -15,7 +15,7 @@ public interface ICourseRepository : IGenericRepository<Course>
     /// <summary>
     /// Get course with teacher and enrollment details
     /// </summary>
-    Task<Course?> GetWithDetailsAsync(Guid id);
+    Task<Course?> GetWithDetailsAsync(int id);
 
     /// <summary>
     /// Get all courses taught by a specific teacher

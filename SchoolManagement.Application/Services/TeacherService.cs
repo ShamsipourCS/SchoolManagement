@@ -32,7 +32,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Get teacher by ID asynchronously
     /// </summary>
-    public async Task<TeacherResponseDto?> GetTeacherByIdAsync(Guid id)
+    public async Task<TeacherResponseDto?> GetTeacherByIdAsync(int id)
     {
         var teacher = await _unitOfWork.TeacherProfiles.GetByIdAsync(id);
         return teacher == null ? null : _mapper.Map<TeacherResponseDto>(teacher);
@@ -41,7 +41,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Get teacher with course details asynchronously
     /// </summary>
-    public async Task<TeacherResponseDto?> GetTeacherWithCoursesAsync(Guid id)
+    public async Task<TeacherResponseDto?> GetTeacherWithCoursesAsync(int id)
     {
         var teacher = await _unitOfWork.TeacherProfiles.GetWithCoursesAsync(id);
         return teacher == null ? null : _mapper.Map<TeacherResponseDto>(teacher);
@@ -82,7 +82,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Update an existing teacher asynchronously
     /// </summary>
-    public async Task<TeacherResponseDto?> UpdateTeacherAsync(Guid id, TeacherUpdateDto teacherUpdateDto)
+    public async Task<TeacherResponseDto?> UpdateTeacherAsync(int id, TeacherUpdateDto teacherUpdateDto)
     {
         // Check if teacher exists
         var existingTeacher = await _unitOfWork.TeacherProfiles.GetByIdAsync(id);
@@ -116,7 +116,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Delete a teacher asynchronously
     /// </summary>
-    public async Task<bool> DeleteTeacherAsync(Guid id)
+    public async Task<bool> DeleteTeacherAsync(int id)
     {
         // Get teacher with courses to check if they have any assigned
         var teacher = await _unitOfWork.TeacherProfiles.GetWithCoursesAsync(id);
@@ -140,7 +140,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Check if a teacher exists asynchronously
     /// </summary>
-    public async Task<bool> TeacherExistsAsync(Guid id)
+    public async Task<bool> TeacherExistsAsync(int id)
     {
         return await _unitOfWork.TeacherProfiles.ExistsAsync(id);
     }
@@ -148,7 +148,7 @@ public class TeacherService : ITeacherService
     /// <summary>
     /// Check if email is already in use by another teacher asynchronously
     /// </summary>
-    public async Task<bool> EmailExistsAsync(string email, Guid? excludeTeacherId = null)
+    public async Task<bool> EmailExistsAsync(string email, int? excludeTeacherId = null)
     {
         return await _unitOfWork.TeacherProfiles.EmailExistsAsync(email, excludeTeacherId);
     }

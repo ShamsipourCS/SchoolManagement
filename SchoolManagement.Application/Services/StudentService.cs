@@ -32,7 +32,7 @@ public class StudentService : IStudentService
     /// <summary>
     /// Get student by ID asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> GetStudentByIdAsync(Guid id)
+    public async Task<StudentResponseDto?> GetStudentByIdAsync(int id)
     {
         var student = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
         return student == null ? null : _mapper.Map<StudentResponseDto>(student);
@@ -41,7 +41,7 @@ public class StudentService : IStudentService
     /// <summary>
     /// Get student with enrollment details asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> GetStudentWithEnrollmentsAsync(Guid id)
+    public async Task<StudentResponseDto?> GetStudentWithEnrollmentsAsync(int id)
     {
         var student = await _unitOfWork.StudentProfiles.GetWithEnrollmentsAsync(id);
         return student == null ? null : _mapper.Map<StudentResponseDto>(student);
@@ -81,7 +81,7 @@ public class StudentService : IStudentService
     /// <summary>
     /// Update an existing student asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> UpdateStudentAsync(Guid id, StudentUpdateDto studentUpdateDto)
+    public async Task<StudentResponseDto?> UpdateStudentAsync(int id, StudentUpdateDto studentUpdateDto)
     {
         // Check if student exists
         var existingStudent = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
@@ -117,7 +117,7 @@ public class StudentService : IStudentService
     /// <summary>
     /// Delete a student asynchronously
     /// </summary>
-    public async Task<bool> DeleteStudentAsync(Guid id)
+    public async Task<bool> DeleteStudentAsync(int id)
     {
         var student = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
         if (student == null)
@@ -134,7 +134,7 @@ public class StudentService : IStudentService
     /// <summary>
     /// Check if a student exists asynchronously
     /// </summary>
-    public async Task<bool> StudentExistsAsync(Guid id)
+    public async Task<bool> StudentExistsAsync(int id)
     {
         return await _unitOfWork.StudentProfiles.ExistsAsync(id);
     }

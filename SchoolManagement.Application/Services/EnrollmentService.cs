@@ -32,7 +32,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Get enrollment by ID asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(Guid id)
+    public async Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(int id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
         return enrollment == null ? null : _mapper.Map<EnrollmentResponseDto>(enrollment);
@@ -41,7 +41,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Get enrollment with student and course details asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(Guid id)
+    public async Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(int id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetWithDetailsAsync(id);
         return enrollment == null ? null : _mapper.Map<EnrollmentResponseDto>(enrollment);
@@ -117,7 +117,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Update an existing enrollment asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(Guid id, EnrollmentUpdateDto enrollmentUpdateDto)
+    public async Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(int id, EnrollmentUpdateDto enrollmentUpdateDto)
     {
         // Check if enrollment exists
         var existingEnrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
@@ -153,7 +153,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Update the grade for an enrollment asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(Guid id, decimal grade)
+    public async Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(int id, decimal grade)
     {
         // Check if enrollment exists
         var existingEnrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
@@ -179,7 +179,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Delete an enrollment asynchronously
     /// </summary>
-    public async Task<bool> DeleteEnrollmentAsync(Guid id)
+    public async Task<bool> DeleteEnrollmentAsync(int id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
         if (enrollment == null)
@@ -196,7 +196,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Check if an enrollment exists asynchronously
     /// </summary>
-    public async Task<bool> EnrollmentExistsAsync(Guid id)
+    public async Task<bool> EnrollmentExistsAsync(int id)
     {
         return await _unitOfWork.Enrollments.ExistsAsync(id);
     }
