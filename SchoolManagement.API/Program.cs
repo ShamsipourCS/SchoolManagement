@@ -1,13 +1,10 @@
-using Microsoft.EntityFrameworkCore;
+using SchoolManagement.Infrastructure.Extensions;
 using SchoolManagement.Application.Extensions;
-using SchoolManagement.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure database context
-builder.Services.AddDbContext<SchoolDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+// Register infrastructure services (DbContext, repositories, UnitOfWork)
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Register application services (AutoMapper and business services)
 builder.Services.AddApplicationServices();
@@ -22,7 +19,8 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "School Management API",
-        Description = "An ASP.NET Core Web API for managing school data including students, teachers, courses, and enrollments",
+        Description =
+            "An ASP.NET Core Web API for managing school data including students, teachers, courses, and enrollments",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
             Name = "School Management Team"
