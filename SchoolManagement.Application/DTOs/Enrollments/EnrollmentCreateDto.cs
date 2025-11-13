@@ -8,18 +8,16 @@ namespace SchoolManagement.Application.DTOs.Enrollments;
 public class EnrollmentCreateDto
 {
     /// <summary>
-    /// Foreign key to the student
+    /// Foreign key to the student profile
     /// </summary>
-    [Required(ErrorMessage = "Student ID is required")]
-    [Range(1, int.MaxValue, ErrorMessage = "Student ID must be a valid positive number")]
-    public int StudentId { get; set; }
+    [Required(ErrorMessage = "Student profile ID is required")]
+    public Guid StudentProfileId { get; set; }
 
     /// <summary>
     /// Foreign key to the course
     /// </summary>
     [Required(ErrorMessage = "Course ID is required")]
-    [Range(1, int.MaxValue, ErrorMessage = "Course ID must be a valid positive number")]
-    public int CourseId { get; set; }
+    public Guid CourseId { get; set; }
 
     /// <summary>
     /// Date when the student enrolled in the course (defaults to current date)

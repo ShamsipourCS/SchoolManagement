@@ -43,15 +43,20 @@ public class AuthService : IAuthService
         // Hash the password
         var passwordHash = PasswordHasher.HashPassword(registerDto.Password);
 
-        // Create new user entity
-        var user = new User
+        // Parse user role (default to Student if not specified)
+        var userRole = Domain.Enums.UserRole.Student;
+        if (!string.IsNullOrWhiteSpace(registerDto.Role))
         {
-            Username = registerDto.Username,
-            Email = registerDto.Email,
-            PasswordHash = passwordHash,
-            Role = string.IsNullOrWhiteSpace(registerDto.Role) ? "User" : registerDto.Role,
-            CreatedAt = DateTime.UtcNow
-        };
+            Enum.TryParse<Domain.Enums.UserRole>(registerDto.Role, true, out userRole);
+        }
+
+        // Create new user entity using factory method
+        var user = User.Create(
+            registerDto.Username,
+            registerDto.Email,
+            passwordHash,
+            userRole
+        );
 
         // Add user to repository
         await _unitOfWork.Users.AddAsync(user);
@@ -66,7 +71,7 @@ public class AuthService : IAuthService
             Token = token,
             Username = user.Username,
             Email = user.Email,
-            Role = user.Role
+            Role = user.Role.ToString()
         };
     }
 
@@ -101,7 +106,7 @@ public class AuthService : IAuthService
             Token = token,
             Username = user.Username,
             Email = user.Email,
-            Role = user.Role
+            Role = user.Role.ToString()
         };
     }
 

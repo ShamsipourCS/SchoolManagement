@@ -25,25 +25,25 @@ public class StudentService : IStudentService
     /// </summary>
     public async Task<IEnumerable<StudentResponseDto>> GetAllStudentsAsync()
     {
-        var students = await _unitOfWork.Students.GetAllAsync();
+        var students = await _unitOfWork.StudentProfiles.GetAllAsync();
         return _mapper.Map<IEnumerable<StudentResponseDto>>(students);
     }
 
     /// <summary>
     /// Get student by ID asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> GetStudentByIdAsync(int id)
+    public async Task<StudentResponseDto?> GetStudentByIdAsync(Guid id)
     {
-        var student = await _unitOfWork.Students.GetByIdAsync(id);
+        var student = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
         return student == null ? null : _mapper.Map<StudentResponseDto>(student);
     }
 
     /// <summary>
     /// Get student with enrollment details asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> GetStudentWithEnrollmentsAsync(int id)
+    public async Task<StudentResponseDto?> GetStudentWithEnrollmentsAsync(Guid id)
     {
-        var student = await _unitOfWork.Students.GetWithEnrollmentsAsync(id);
+        var student = await _unitOfWork.StudentProfiles.GetWithEnrollmentsAsync(id);
         return student == null ? null : _mapper.Map<StudentResponseDto>(student);
     }
 
@@ -52,7 +52,7 @@ public class StudentService : IStudentService
     /// </summary>
     public async Task<IEnumerable<StudentResponseDto>> GetActiveStudentsAsync()
     {
-        var students = await _unitOfWork.Students.GetActiveStudentsAsync();
+        var students = await _unitOfWork.StudentProfiles.GetActiveStudentsAsync();
         return _mapper.Map<IEnumerable<StudentResponseDto>>(students);
     }
 
@@ -62,7 +62,7 @@ public class StudentService : IStudentService
     public async Task<StudentResponseDto> CreateStudentAsync(StudentCreateDto studentCreateDto)
     {
         // Use domain factory method to create entity with validation
-        var student = Student.Create(studentCreateDto.FullName, studentCreateDto.BirthDate);
+        var studentProfile = StudentProfileProfile.Create(studentCreateDto.FullName, studentCreateDto.BirthDate);
 
         // Set active status from DTO
         if (!studentCreateDto.IsActive)
@@ -71,7 +71,7 @@ public class StudentService : IStudentService
         }
 
         // Add to repository
-        await _unitOfWork.Students.AddAsync(student);
+        await _unitOfWork.StudentProfiles.AddAsync(student);
         await _unitOfWork.SaveChangesAsync();
 
         // Return mapped response
@@ -81,10 +81,10 @@ public class StudentService : IStudentService
     /// <summary>
     /// Update an existing student asynchronously
     /// </summary>
-    public async Task<StudentResponseDto?> UpdateStudentAsync(int id, StudentUpdateDto studentUpdateDto)
+    public async Task<StudentResponseDto?> UpdateStudentAsync(Guid id, StudentUpdateDto studentUpdateDto)
     {
         // Check if student exists
-        var existingStudent = await _unitOfWork.Students.GetByIdAsync(id);
+        var existingStudent = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
         if (existingStudent == null)
         {
             return null;
@@ -107,7 +107,7 @@ public class StudentService : IStudentService
         // This is intentional - birth dates should not change after creation
 
         // Update repository
-        _unitOfWork.Students.Update(existingStudent);
+        _unitOfWork.StudentProfiles.Update(existingStudent);
         await _unitOfWork.SaveChangesAsync();
 
         // Return mapped response
@@ -117,15 +117,15 @@ public class StudentService : IStudentService
     /// <summary>
     /// Delete a student asynchronously
     /// </summary>
-    public async Task<bool> DeleteStudentAsync(int id)
+    public async Task<bool> DeleteStudentAsync(Guid id)
     {
-        var student = await _unitOfWork.Students.GetByIdAsync(id);
+        var student = await _unitOfWork.StudentProfiles.GetByIdAsync(id);
         if (student == null)
         {
             return false;
         }
 
-        _unitOfWork.Students.Delete(student);
+        _unitOfWork.StudentProfiles.Delete(student);
         await _unitOfWork.SaveChangesAsync();
 
         return true;
@@ -134,8 +134,8 @@ public class StudentService : IStudentService
     /// <summary>
     /// Check if a student exists asynchronously
     /// </summary>
-    public async Task<bool> StudentExistsAsync(int id)
+    public async Task<bool> StudentExistsAsync(Guid id)
     {
-        return await _unitOfWork.Students.ExistsAsync(id);
+        return await _unitOfWork.StudentProfiles.ExistsAsync(id);
     }
 }

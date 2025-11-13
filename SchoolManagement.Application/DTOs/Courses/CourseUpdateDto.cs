@@ -27,9 +27,7 @@ public class CourseUpdateDto
     public DateTime StartDate { get; set; }
 
     /// <summary>
-    /// Foreign key to the teacher teaching this course
+    /// Foreign key to the teacher profile teaching this course
     /// </summary>
-    [Required(ErrorMessage = "Teacher ID is required")]
-    [Range(1, int.MaxValue, ErrorMessage = "Teacher ID must be a valid positive number")]
-    public int TeacherId { get; set; }
+    public Guid? TeacherProfileId { get; set; }
 }

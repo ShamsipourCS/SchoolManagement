@@ -1,32 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Infrastructure.Persistence.Configurations;
 
-public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
+/// <summary>
+/// Entity Framework configuration for TeacherProfile entity
+/// </summary>
+public class TeacherProfileConfiguration : IEntityTypeConfiguration<TeacherProfile>
 {
-    public void Configure(EntityTypeBuilder<Teacher> builder)
+    public void Configure(EntityTypeBuilder<TeacherProfile> builder)
     {
-        builder.ToTable("Teachers");
-        builder.HasKey(t => t.Id);
-        builder.Property(t => t.FullName).HasMaxLength(200).IsRequired();
+        // Table name
+        builder.ToTable("TeacherProfiles");
 
-        // Configure Email as owned value object
-        builder.OwnsOne(t => t.Email, email =>
-        {
-            email.Property(e => e.Value)
-                .HasColumnName("Email")
-                .HasMaxLength(200)
-                .IsRequired();
+        // Primary key
+        builder.HasKey(tp => tp.Id);
 
-            // Create unique index on the Email column
-            email.HasIndex(e => e.Value).IsUnique();
-        });
+        // UserId - Foreign key to User
+        builder.Property(tp => tp.UserId)
+            .IsRequired();
+
+        builder.HasIndex(tp => tp.UserId)
+            .IsUnique()
+            .HasDatabaseName("IX_TeacherProfiles_UserId");
+
+        // FullName configuration
+        builder.Property(tp => tp.FullName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        // HireDate configuration
+        builder.Property(tp => tp.HireDate)
+            .IsRequired();
+
+        // Audit fields
+        builder.Property(tp => tp.CreatedAt)
+            .IsRequired();
+
+        builder.Property(tp => tp.UpdatedAt)
+            .IsRequired(false);
+
+        // Relationships
+        builder.HasMany(tp => tp.Courses)
+            .WithOne(c => c.TeacherProfile)
+            .HasForeignKey(c => c.TeacherProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

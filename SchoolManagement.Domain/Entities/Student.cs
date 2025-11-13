@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SchoolManagement.Domain.Entities;
 
 /// <summary>
-/// Represents a student in the school management system
+/// Represents a student profile in the school management system.
+/// Contains domain-specific data for students. Identity/auth data is in User entity.
+/// IsActive status is managed through User.IsActive.
 /// </summary>
-public class Student : BaseEntity
+public class StudentProfile : BaseEntity
 {
     /// <summary>
     /// Private constructor for EF Core
     /// </summary>
-    private Student() { }
+    private StudentProfile() { }
+
+    /// <summary>
+    /// Foreign key to the User entity (1:1 relationship)
+    /// </summary>
+    public Guid UserId { get; private set; }
+
+    /// <summary>
+    /// Navigation property to the associated user
+    /// </summary>
+    public virtual User User { get; private set; } = null!;
 
     /// <summary>
     /// Full name of the student
@@ -27,24 +36,23 @@ public class Student : BaseEntity
     public DateTime BirthDate { get; private set; }
 
     /// <summary>
-    /// Indicates whether the student is currently active
-    /// </summary>
-    public bool IsActive { get; private set; } = true;
-
-    /// <summary>
     /// Collection of enrollments for this student
     /// </summary>
-    public ICollection<Enrollment> Enrollments { get; private set; } = new List<Enrollment>();
+    public virtual ICollection<Enrollment> Enrollments { get; private set; } = new List<Enrollment>();
 
     /// <summary>
-    /// Factory method to create a new student with validation
+    /// Factory method to create a new student profile with validation
     /// </summary>
+    /// <param name="userId">ID of the associated user</param>
     /// <param name="fullName">Student's full name</param>
     /// <param name="birthDate">Student's date of birth</param>
-    /// <returns>A valid Student instance</returns>
+    /// <returns>A valid StudentProfile instance</returns>
     /// <exception cref="ArgumentException">Thrown when validation fails</exception>
-    public static Student Create(string fullName, DateTime birthDate)
+    public static StudentProfile Create(Guid userId, string fullName, DateTime birthDate)
     {
+        if (userId == Guid.Empty)
+            throw new ArgumentException("User ID is required", nameof(userId));
+
         if (string.IsNullOrWhiteSpace(fullName))
             throw new ArgumentException("Full name is required and cannot be empty", nameof(fullName));
 
@@ -57,11 +65,11 @@ public class Student : BaseEntity
         if (birthDate < DateTime.UtcNow.AddYears(-120))
             throw new ArgumentException("Birth date is not realistic", nameof(birthDate));
 
-        return new Student
+        return new StudentProfile
         {
+            UserId = userId,
             FullName = fullName.Trim(),
-            BirthDate = birthDate,
-            IsActive = true
+            BirthDate = birthDate
         };
     }
 
@@ -79,21 +87,5 @@ public class Student : BaseEntity
             throw new ArgumentException("Full name cannot exceed 200 characters", nameof(fullName));
 
         FullName = fullName.Trim();
-    }
-
-    /// <summary>
-    /// Deactivates the student
-    /// </summary>
-    public void Deactivate()
-    {
-        IsActive = false;
-    }
-
-    /// <summary>
-    /// Reactivates the student
-    /// </summary>
-    public void Activate()
-    {
-        IsActive = true;
     }
 }

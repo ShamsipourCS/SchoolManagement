@@ -32,7 +32,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Get enrollment by ID asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(int id)
+    public async Task<EnrollmentResponseDto?> GetEnrollmentByIdAsync(Guid id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
         return enrollment == null ? null : _mapper.Map<EnrollmentResponseDto>(enrollment);
@@ -41,7 +41,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Get enrollment with student and course details asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(int id)
+    public async Task<EnrollmentResponseDto?> GetEnrollmentWithDetailsAsync(Guid id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetWithDetailsAsync(id);
         return enrollment == null ? null : _mapper.Map<EnrollmentResponseDto>(enrollment);
@@ -71,11 +71,11 @@ public class EnrollmentService : IEnrollmentService
     public async Task<EnrollmentResponseDto> CreateEnrollmentAsync(EnrollmentCreateDto enrollmentCreateDto)
     {
         // Validate that student exists
-        var studentExists = await _unitOfWork.Students.ExistsAsync(enrollmentCreateDto.StudentId);
+        var studentExists = await _unitOfWork.StudentProfiles.ExistsAsync(enrollmentCreateDto.StudentProfileId);
         if (!studentExists)
         {
-            throw new ArgumentException($"Student with ID {enrollmentCreateDto.StudentId} does not exist.",
-                nameof(enrollmentCreateDto.StudentId));
+            throw new ArgumentException($"Student with ID {enrollmentCreateDto.StudentProfileId} does not exist.",
+                nameof(enrollmentCreateDto.StudentProfileId));
         }
 
         // Validate that course exists
@@ -88,18 +88,18 @@ public class EnrollmentService : IEnrollmentService
 
         // Prevent duplicate enrollments (same student + course)
         var isAlreadyEnrolled = await _unitOfWork.Enrollments.IsEnrolledAsync(
-            enrollmentCreateDto.StudentId,
+            enrollmentCreateDto.StudentProfileId,
             enrollmentCreateDto.CourseId);
 
         if (isAlreadyEnrolled)
         {
             throw new InvalidOperationException(
-                $"Student with ID {enrollmentCreateDto.StudentId} is already enrolled in course with ID {enrollmentCreateDto.CourseId}.");
+                $"Student with ID {enrollmentCreateDto.StudentProfileId} is already enrolled in course with ID {enrollmentCreateDto.CourseId}.");
         }
 
         // Use domain factory method to create entity with validation
         var enrollment = Enrollment.Create(
-            enrollmentCreateDto.StudentId,
+            enrollmentCreateDto.StudentProfileId,
             enrollmentCreateDto.CourseId,
             enrollmentCreateDto.EnrollDate);
 
@@ -117,7 +117,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Update an existing enrollment asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(int id, EnrollmentUpdateDto enrollmentUpdateDto)
+    public async Task<EnrollmentResponseDto?> UpdateEnrollmentAsync(Guid id, EnrollmentUpdateDto enrollmentUpdateDto)
     {
         // Check if enrollment exists
         var existingEnrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
@@ -153,7 +153,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Update the grade for an enrollment asynchronously
     /// </summary>
-    public async Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(int id, decimal grade)
+    public async Task<EnrollmentResponseDto?> UpdateEnrollmentGradeAsync(Guid id, decimal grade)
     {
         // Check if enrollment exists
         var existingEnrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
@@ -179,7 +179,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Delete an enrollment asynchronously
     /// </summary>
-    public async Task<bool> DeleteEnrollmentAsync(int id)
+    public async Task<bool> DeleteEnrollmentAsync(Guid id)
     {
         var enrollment = await _unitOfWork.Enrollments.GetByIdAsync(id);
         if (enrollment == null)
@@ -196,7 +196,7 @@ public class EnrollmentService : IEnrollmentService
     /// <summary>
     /// Check if an enrollment exists asynchronously
     /// </summary>
-    public async Task<bool> EnrollmentExistsAsync(int id)
+    public async Task<bool> EnrollmentExistsAsync(Guid id)
     {
         return await _unitOfWork.Enrollments.ExistsAsync(id);
     }

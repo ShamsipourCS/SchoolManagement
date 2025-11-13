@@ -8,7 +8,7 @@ public class EnrollmentResponseDto
     /// <summary>
     /// Enrollment ID
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// Date when the student enrolled in the course
@@ -21,9 +21,9 @@ public class EnrollmentResponseDto
     public decimal? Grade { get; set; }
 
     /// <summary>
-    /// Foreign key to the student
+    /// Foreign key to the student profile
     /// </summary>
-    public int StudentId { get; set; }
+    public Guid StudentProfileId { get; set; }
 
     /// <summary>
     /// Name of the student
@@ -33,7 +33,7 @@ public class EnrollmentResponseDto
     /// <summary>
     /// Foreign key to the course
     /// </summary>
-    public int CourseId { get; set; }
+    public Guid CourseId { get; set; }
 
     /// <summary>
     /// Title of the course

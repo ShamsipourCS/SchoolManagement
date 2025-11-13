@@ -12,14 +12,14 @@ namespace SchoolManagement.Domain.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     /// <summary>
-    /// Student repository
+    /// Student profile repository
     /// </summary>
-    IStudentRepository Students { get; }
+    IStudentProfileRepository StudentProfiles { get; }
 
     /// <summary>
-    /// Teacher repository
+    /// Teacher profile repository
     /// </summary>
-    ITeacherRepository Teachers { get; }
+    ITeacherProfileRepository TeacherProfiles { get; }
 
     /// <summary>
     /// Course repository

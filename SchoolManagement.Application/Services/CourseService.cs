@@ -32,7 +32,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Get course by ID asynchronously
     /// </summary>
-    public async Task<CourseResponseDto?> GetCourseByIdAsync(int id)
+    public async Task<CourseResponseDto?> GetCourseByIdAsync(Guid id)
     {
         var course = await _unitOfWork.Courses.GetByIdAsync(id);
         return course == null ? null : _mapper.Map<CourseResponseDto>(course);
@@ -41,7 +41,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Get course with teacher and enrollment details asynchronously
     /// </summary>
-    public async Task<CourseResponseDto?> GetCourseWithDetailsAsync(int id)
+    public async Task<CourseResponseDto?> GetCourseWithDetailsAsync(Guid id)
     {
         var course = await _unitOfWork.Courses.GetWithDetailsAsync(id);
         return course == null ? null : _mapper.Map<CourseResponseDto>(course);
@@ -62,16 +62,16 @@ public class CourseService : ICourseService
     public async Task<CourseResponseDto> CreateCourseAsync(CourseCreateDto courseCreateDto)
     {
         // Validate that teacher exists
-        var teacherExists = await _unitOfWork.Teachers.ExistsAsync(courseCreateDto.TeacherId);
+        var teacherExists = await _unitOfWork.TeacherProfiles.ExistsAsync(courseCreateDto.TeacherProfileId);
         if (!teacherExists)
         {
-            throw new ArgumentException($"Teacher with ID {courseCreateDto.TeacherId} does not exist.", nameof(courseCreateDto.TeacherId));
+            throw new ArgumentException($"Teacher with ID {courseCreateDto.TeacherProfileId} does not exist.", nameof(courseCreateDto.TeacherProfileId));
         }
 
         // Use domain factory method to create entity with validation
         var course = Course.Create(
             courseCreateDto.Title,
-            courseCreateDto.TeacherId,
+            courseCreateDto.TeacherProfileId,
             courseCreateDto.StartDate,
             courseCreateDto.Description);
 
@@ -89,7 +89,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Update an existing course asynchronously
     /// </summary>
-    public async Task<CourseResponseDto?> UpdateCourseAsync(int id, CourseUpdateDto courseUpdateDto)
+    public async Task<CourseResponseDto?> UpdateCourseAsync(Guid id, CourseUpdateDto courseUpdateDto)
     {
         // Check if course exists
         var existingCourse = await _unitOfWork.Courses.GetByIdAsync(id);
@@ -99,12 +99,12 @@ public class CourseService : ICourseService
         }
 
         // Validate that new teacher exists (if teacher is being changed)
-        if (courseUpdateDto.TeacherId != existingCourse.TeacherId)
+        if (courseUpdateDto.TeacherProfileId != existingCourse.TeacherProfileId)
         {
-            var teacherExists = await _unitOfWork.Teachers.ExistsAsync(courseUpdateDto.TeacherId);
+            var teacherExists = await _unitOfWork.TeacherProfiles.ExistsAsync(courseUpdateDto.TeacherProfileId);
             if (!teacherExists)
             {
-                throw new ArgumentException($"Teacher with ID {courseUpdateDto.TeacherId} does not exist.", nameof(courseUpdateDto.TeacherId));
+                throw new ArgumentException($"Teacher with ID {courseUpdateDto.TeacherProfileId} does not exist.", nameof(courseUpdateDto.TeacherProfileId));
             }
         }
 
@@ -113,9 +113,9 @@ public class CourseService : ICourseService
         existingCourse.UpdateDescription(courseUpdateDto.Description);
         existingCourse.UpdateStartDate(courseUpdateDto.StartDate);
 
-        if (courseUpdateDto.TeacherId != existingCourse.TeacherId)
+        if (courseUpdateDto.TeacherProfileId != existingCourse.TeacherProfileId)
         {
-            existingCourse.AssignTeacher(courseUpdateDto.TeacherId);
+            existingCourse.AssignTeacher(courseUpdateDto.TeacherProfileId);
         }
 
         // Update repository
@@ -132,7 +132,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Delete a course asynchronously
     /// </summary>
-    public async Task<bool> DeleteCourseAsync(int id)
+    public async Task<bool> DeleteCourseAsync(Guid id)
     {
         // Get course with enrollments to check if there are active enrollments
         var course = await _unitOfWork.Courses.GetWithDetailsAsync(id);
@@ -156,7 +156,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Check if a course exists asynchronously
     /// </summary>
-    public async Task<bool> CourseExistsAsync(int id)
+    public async Task<bool> CourseExistsAsync(Guid id)
     {
         return await _unitOfWork.Courses.ExistsAsync(id);
     }

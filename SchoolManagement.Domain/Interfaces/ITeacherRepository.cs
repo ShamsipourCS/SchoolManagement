@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SchoolManagement.Domain.Entities;
 
 namespace SchoolManagement.Domain.Interfaces;
 
 /// <summary>
-/// Teacher-specific repository interface
+/// Teacher profile-specific repository interface
 /// </summary>
-public interface ITeacherRepository : IGenericRepository<Teacher>
+public interface ITeacherProfileRepository : IGenericRepository<TeacherProfile>
 {
     /// <summary>
-    /// Get teacher with all courses
+    /// Get teacher profile with all courses
     /// </summary>
-    Task<Teacher?> GetWithCoursesAsync(int id);
+    Task<TeacherProfile?> GetWithCoursesAsync(Guid id);
 
     /// <summary>
-    /// Get teacher by email address
+    /// Get teacher profile by user ID
     /// </summary>
-    Task<Teacher?> GetByEmailAsync(string email);
+    Task<TeacherProfile?> GetByUserIdAsync(Guid userId);
 
     /// <summary>
-    /// Check if email is already in use
+    /// Get all active teacher profiles (based on User.IsActive)
     /// </summary>
-    Task<bool> EmailExistsAsync(string email, int? excludeTeacherId = null);
+    Task<IEnumerable<TeacherProfile>> GetActiveTeacherProfilesAsync();
 }
