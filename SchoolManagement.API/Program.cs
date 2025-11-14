@@ -6,6 +6,9 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using SchoolManagement.Infrastructure.Persistence;
+using SchoolManagement.Infrastructure.Persistence.Seed;
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -25,7 +28,8 @@ Log.Logger = new LoggerConfiguration()
         rollOnFileSizeLimit: true,
         fileSizeLimitBytes: 10_485_760, // 10 MB
         retainedFileCountLimit: 30,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] [{MachineName}] [{ThreadId}] {Message:lj}{NewLine}{Exception}")
+        outputTemplate:
+        "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] [{MachineName}] [{ThreadId}] {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
 try
@@ -45,52 +49,52 @@ try
 
     // Configure JWT Authentication
     var jwtSecret = builder.Configuration["JwtSettings:Secret"]
-        ?? throw new InvalidOperationException("JWT Secret is not configured");
+                    ?? throw new InvalidOperationException("JWT Secret is not configured");
     var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]
-        ?? throw new InvalidOperationException("JWT Issuer is not configured");
+                    ?? throw new InvalidOperationException("JWT Issuer is not configured");
     var jwtAudience = builder.Configuration["JwtSettings:Audience"]
-        ?? throw new InvalidOperationException("JWT Audience is not configured");
+                      ?? throw new InvalidOperationException("JWT Audience is not configured");
 
     builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
-            ClockSkew = TimeSpan.Zero // Remove default 5 minute tolerance
-        };
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtIssuer,
+                ValidAudience = jwtAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                ClockSkew = TimeSpan.Zero // Remove default 5 minute tolerance
+            };
 
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
+            options.Events = new JwtBearerEvents
             {
-                Log.Warning("Authentication failed: {Message}", context.Exception.Message);
-                return Task.CompletedTask;
-            },
-            OnTokenValidated = context =>
-            {
-                Log.Debug("Token validated for user: {User}", context.Principal?.Identity?.Name);
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                Log.Warning("Authentication challenge: {Error} - {ErrorDescription}",
-                    context.Error, context.ErrorDescription);
-                return Task.CompletedTask;
-            }
-        };
-    });
+                OnAuthenticationFailed = context =>
+                {
+                    Log.Warning("Authentication failed: {Message}", context.Exception.Message);
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    Log.Debug("Token validated for user: {User}", context.Principal?.Identity?.Name);
+                    return Task.CompletedTask;
+                },
+                OnChallenge = context =>
+                {
+                    Log.Warning("Authentication challenge: {Error} - {ErrorDescription}",
+                        context.Error, context.ErrorDescription);
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
     // Configure Authorization policies
     builder.Services.AddAuthorization(options =>
@@ -100,9 +104,12 @@ try
     });
 
     // Configure CORS policy
-    var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-    var corsAllowedMethods = builder.Configuration.GetSection("Cors:AllowedMethods").Get<string[]>() ?? Array.Empty<string>();
-    var corsAllowedHeaders = builder.Configuration.GetSection("Cors:AllowedHeaders").Get<string[]>() ?? Array.Empty<string>();
+    var corsAllowedOrigins =
+        builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+    var corsAllowedMethods =
+        builder.Configuration.GetSection("Cors:AllowedMethods").Get<string[]>() ?? Array.Empty<string>();
+    var corsAllowedHeaders =
+        builder.Configuration.GetSection("Cors:AllowedHeaders").Get<string[]>() ?? Array.Empty<string>();
     var corsAllowCredentials = builder.Configuration.GetValue<bool>("Cors:AllowCredentials");
     var corsMaxAge = builder.Configuration.GetValue<int>("Cors:MaxAge");
 
@@ -111,9 +118,9 @@ try
         options.AddPolicy("SchoolManagementPolicy", policy =>
         {
             policy.WithOrigins(corsAllowedOrigins)
-                  .WithMethods(corsAllowedMethods)
-                  .WithHeaders(corsAllowedHeaders)
-                  .SetPreflightMaxAge(TimeSpan.FromSeconds(corsMaxAge));
+                .WithMethods(corsAllowedMethods)
+                .WithHeaders(corsAllowedHeaders)
+                .SetPreflightMaxAge(TimeSpan.FromSeconds(corsMaxAge));
 
             if (corsAllowCredentials)
             {
@@ -143,7 +150,8 @@ try
         // Configure JWT Authentication for Swagger
         options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
         {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Description =
+                "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
             Name = "Authorization",
             In = Microsoft.OpenApi.Models.ParameterLocation.Header,
             Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
@@ -176,6 +184,23 @@ try
     });
 
     var app = builder.Build();
+
+    // ----- DEVELOPMENT SEED -----
+    if (app.Environment.IsDevelopment())
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
+
+            // Ensure database exists and migrations are applied
+            context.Database.Migrate();
+
+            // Seed development data
+            DevelopmentSeed.Seed(context);
+            // Or async version if you convert it to async:
+            // await DevelopmentSeed.SeedAsync(context);
+        }
+    }
 
     // Configure the HTTP request pipeline
 
