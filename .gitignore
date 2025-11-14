@@ -34,8 +34,6 @@ dist/
 TestResults/
 *.trx
 
-# Entity Framework Migrations cache
-Migrations/
 
 # Coverage / analysis
 coverage/
