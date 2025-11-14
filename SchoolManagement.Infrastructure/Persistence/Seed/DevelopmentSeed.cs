@@ -43,6 +43,14 @@ public static class DevelopmentSeed
             var c3 = Course.Create("Chemistry 101", teacherProfile1.Id, DateTime.UtcNow.AddDays(1));
             context.Courses.AddRange(c1, c2, c3);
             context.SaveChanges();
+
+            var e1 = Enrollment.Create(studentProfile1.Id, c1.Id, DateTime.UtcNow.AddDays(-9));
+            var e2 = Enrollment.Create(studentProfile2.Id, c1.Id, DateTime.UtcNow.AddDays(-8));
+            var e3 = Enrollment.Create(studentProfile3.Id, c2.Id, DateTime.UtcNow.AddDays(-4));
+            var e4 = Enrollment.Create(studentProfile1.Id, c2.Id, DateTime.UtcNow.AddDays(-3));
+            var e5 = Enrollment.Create(studentProfile2.Id, c3.Id, DateTime.UtcNow); // future course
+            context.Enrollments.AddRange(e1, e2, e3, e4, e5);
+            context.SaveChanges();
         }
     }
 }
