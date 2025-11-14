@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SchoolManagement.Domain.Entities;
+﻿namespace SchoolManagement.Domain.Entities;
 
 /// <summary>
 /// Represents a student profile in the school management system.

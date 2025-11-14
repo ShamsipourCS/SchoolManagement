@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SchoolManagement.Domain.Entities;
+﻿namespace SchoolManagement.Domain.Entities;
 
 /// <summary>
 /// Base entity with common properties for all domain entities
